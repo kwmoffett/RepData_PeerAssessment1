@@ -1,13 +1,6 @@
----
-title: "PA1_template"
-author: "Kenneth Moffett"
-date: "January 9, 2016"
-output: 
-  html_document: 
-    fig_caption: yes
-    keep_md: yes
-keep_md: yes
----
+# PA1_template
+Kenneth Moffett  
+January 9, 2016  
 
 # This Report will answer the questions for Course Project One for the Reproducible Research Course.
 
@@ -15,8 +8,8 @@ This report presumes two things: 1) The activity csv has been unzipped; and 2) T
 
 ## Question One: Loading the Data and Required Packages
 
-```{r, echo=TRUE}
 
+```r
 # Load the Data
 
 data <- read.csv("activity.csv", header =  TRUE)
@@ -25,15 +18,52 @@ data <- read.csv("activity.csv", header =  TRUE)
 
 library(plyr)
 library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:plyr':
+## 
+##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+##     summarize
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 library(reshape2)
 library(lubridate)
+```
 
+```
+## 
+## Attaching package: 'lubridate'
+```
+
+```
+## The following object is masked from 'package:plyr':
+## 
+##     here
 ```
 
 ## Question Two: Generating a Histogram to Compute the Number of Steps Per Day
 
-```{r, echo=TRUE}
 
+```r
 ## Generate Dataset Containing Total Number of Steps in Each Day
 
 totalsteps <- ddply(data, .(date), summarize, sum = sum(steps))
@@ -41,25 +71,44 @@ totalsteps <- ddply(data, .(date), summarize, sum = sum(steps))
 ## Generate Histogram
 
 hist(totalsteps$sum, main = "Total Number of Steps per Day", ylab = "Frequency", xlab = "Number of Steps Per Day")
-dev.off()
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)\
+
+```r
+dev.off()
+```
+
+```
+## null device 
+##           1
 ```
 
 ## Question Three: Compute the Mean and Median Number of Steps Per Day
 
-```{r, echo=TRUE}
 
+```r
 mean(totalsteps$sum, na.rm = TRUE)
-median(totalsteps$sum, na.rm = TRUE)
+```
 
+```
+## [1] 10766.19
+```
+
+```r
+median(totalsteps$sum, na.rm = TRUE)
+```
+
+```
+## [1] 10765
 ```
 
 The mean number of steps per day is 10766.19. The median number of steps per day is 10765.
 
 ## Question Four: Generate Time-Series Plot of the Mean Number of Steps Taken Per Day
 
-```{r, echo=TRUE}
 
+```r
 ## Generate Dataset with Mean Number of Steps by Date
 
 meansteps <- ddply(data, .(date), summarize, sum = mean(steps))
@@ -72,14 +121,23 @@ cleanmeansteps <- na.omit(meansteps)
 
 plot(cleanmeansteps$date, cleanmeansteps$sum, type = "l", ylab = "Mean Number of Steps", xlab = "Date", main = "Mean Number of Steps Per Day")
 lines(cleanmeansteps$date, cleanmeansteps$sum)
-dev.off()
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)\
+
+```r
+dev.off()
+```
+
+```
+## null device 
+##           1
 ```
 
 ## Question Five: Discover which Five-Minute Interval contains the Highest Number of Steps across All Days on Average
 
-```{r, echo=TRUE}
 
+```r
 ## Generate Dataset with Number of Steps by Interval
 
 ### Omit NAs in the Data or Else Computation Does NOT Work
@@ -94,15 +152,19 @@ intervalsteps <- ddply(cleandata, .(interval), summarize, sum = mean(steps))
 
 subintervalsteps <- subset(intervalsteps, intervalsteps$sum == max(intervalsteps$sum))
 print(subintervalsteps)
+```
 
+```
+##     interval      sum
+## 104      835 206.1698
 ```
 
 The interval with the highest number of steps is interval 835, with the maximum number of steps being 206.1698.
 
 ## Question Six: Provide Code that Imputes the Missing Data
 
-```{r, echo=TRUE}
 
+```r
 ## Generate New Dataset for Imputation
 
 data2 <- data
@@ -110,15 +172,14 @@ data2 <- data
 ## Impute Values in New Dataset
 
 data2$steps[which(is.na(data2$steps))] <- mean(data$steps, na.rm = TRUE)
-
 ```
 
 In this case, I replaced each missing value for steps to be the mean of steps using the unimputed data.
 
 ## Question Seven: Generate a Histogram of the Total Number of Steps Using the Imputed Data
 
-```{r, echo=TRUE}
 
+```r
 ## Generate Total Number of Steps in Imputed Data
 
 totalsteps2 <- ddply(data2, .(date), summarize, sum = sum(steps))
@@ -126,14 +187,23 @@ totalsteps2 <- ddply(data2, .(date), summarize, sum = sum(steps))
 ## Generate Histogram Using Imputed Data
 
 hist(totalsteps2$sum, main = "Total Number of Steps per Day", ylab = "Frequency", xlab = "Number of Steps Per Day")
-dev.off()
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-7-1.png)\
+
+```r
+dev.off()
+```
+
+```
+## null device 
+##           1
 ```
 
 ##Question Eight: Generate a Panel plot that Compares the Average Number of Steps Taken per 5-minute Interval Across Weekdays and Weekends
 
-```{r, echo=TRUE}
 
+```r
 ## Generate Factor Variable for Weekends and Weekdays
 
 data$date <- ymd(data$date)
@@ -173,8 +243,17 @@ lines(weekdayintervalsteps$interval, weekdayintervalsteps$sum)
 
 plot(weekendintervalsteps$interval, weekendintervalsteps$sum, type = "n", ylab = "Number of Steps", xlab = "Interval", main = "Average Number of Steps for Weekends")
 lines(weekendintervalsteps$interval, weekendintervalsteps$sum)
-dev.off()
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-8-1.png)\
+
+```r
+dev.off()
+```
+
+```
+## null device 
+##           1
 ```
 
 ## Question Nine: Provide All of the R Code Necessary to Generate the Report
